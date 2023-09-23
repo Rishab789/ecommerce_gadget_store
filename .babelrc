@@ -1,0 +1,10 @@
+// {
+//     "presets" : ["next/babel" , "@babel/preset-react"]
+// }
+
+{
+    "presets": [
+      
+        "@babel/preset-react"
+    ]
+}
