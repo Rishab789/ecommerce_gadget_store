@@ -5,20 +5,47 @@ import { toast } from 'react-hot-toast'
 const Context = createContext();
 
 export const StateContext = ({ children }) => {
+
+
+
+
+
+
+
     const [showCart, setShowCart] = useState(false);
+
+
     const [cartItems, setCartItems] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
     const [totalQuantities, setTotalQuantities] = useState(0);
     const [qty, setQty] = useState(1);
 
+    // const getCartData = () => {
+
+
+    // }
+
+    useEffect(() => {
+        let localCartData = localStorage.getItem('lists');
+        if (localCartData) {
+            setCartItems(JSON.parse(localCartData));
+        }
+
+    }, [])
+
+
+
+
+
     let foundProduct;
     let index;
-
 
     const onAdd = (product, quantity) => {
         const checkProductInCart = cartItems.find((item) => item._id === product._id);
         setTotalPrice((prevTotalPrice) => prevTotalPrice + product.price * quantity);
         setTotalQuantities((prevTotalQuantities) => prevTotalQuantities + quantity);
+
+
 
 
         if (checkProductInCart) {
@@ -41,6 +68,30 @@ export const StateContext = ({ children }) => {
         toast.success(`${qty} ${product.name} added to the cart.`);
 
     }
+    ////////////////////////////////Setting the CartItems//////////////////////
+    useEffect(() => {
+        localStorage.setItem("lists", JSON.stringify(cartItems))
+    }, [cartItems]);
+
+    useEffect(() => {
+        // Update totalPrice and totalQuantities when cartItems change
+        let price = 0;
+        let quantities = 0;
+        for (const item of cartItems) {
+            price += item.price * item.quantity;
+            quantities += item.quantity;
+        }
+        setTotalPrice(price);
+        setTotalQuantities(quantities);
+    }, [cartItems]);
+
+    ///////////////////////////////////////////////////////////
+
+
+
+
+
+
 
 
     const onRemove = (product) => {
@@ -85,6 +136,11 @@ export const StateContext = ({ children }) => {
             return prevQty - 1;
         });
     }
+
+
+
+
+
 
     return (
         <Context.Provider value={{
